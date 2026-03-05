@@ -15,8 +15,5 @@
    Cricket enthusiast | Gaming | Photography
    
    ## 📫 Reach Me
-   - Instagram: [@your_handle]
-   - Email: your.email@gmail.com
-   
-   ![GitHub Stats](https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=radical)
-   
+   - Instagram: vaidikkohli9
+   - Email: vaidikaru2323@gmail.com 
