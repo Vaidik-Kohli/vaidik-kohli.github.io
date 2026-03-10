@@ -172,43 +172,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 7. CONTACT FORM — mailto handler
+    // 7. CONTACT FORM — FormSubmit.co handler
     // ==========================================
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const name = contactForm.querySelector('#name').value.trim();
-            const email = contactForm.querySelector('#email').value.trim();
-            const message = contactForm.querySelector('#message').value.trim();
-
-            const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
-            const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-            const mailtoLink = `mailto:vaidikaru2323@gmail.com?subject=${subject}&body=${body}`;
-
-            const a = document.createElement('a');
-            a.href = mailtoLink;
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            // Visual feedback
             const btn = contactForm.querySelector('.btn-submit');
             const originalHTML = btn.innerHTML;
-
+            btn.disabled = true;
             btn.innerHTML = `
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Opening Mail Client!
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Sending...
             `;
-            btn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
 
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.style.background = '';
-                contactForm.reset();
-            }, 3000);
+            const formData = new FormData(contactForm);
+
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(response => {
+                if (response.ok) {
+                    btn.innerHTML = `
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        Message Sent!
+                    `;
+                    btn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+                    contactForm.reset();
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            })
+            .catch(() => {
+                btn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    Failed — Try Again
+                `;
+                btn.style.background = 'linear-gradient(135deg, #dc2626, #ef4444)';
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                    btn.disabled = false;
+                }, 3000);
+            });
         });
     }
 
